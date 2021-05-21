@@ -87,7 +87,7 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getUsers = getUsers;
-/* Eliminamos 1 usuario DELETE */
+/* Eliminamos 1 usuario DELETE ((tambien tenemos que eliminar las tareas */
 var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var users, result;
     return __generator(this, function (_a) {
@@ -100,6 +100,10 @@ var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 2: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users)["delete"](req.params.id)];
             case 3:
                 result = _a.sent();
+                /* *************************************************************** */
+                /* eliminamos la lista */
+                /* await getRepository(Todos).delete(req.params.id); */
+                /* *************************************************************** */
                 return [2 /*return*/, res.json(result)];
         }
     });
@@ -114,8 +118,6 @@ var getUsersOne = function (req, res) { return __awaiter(void 0, void 0, void 0,
             case 0: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).findOne(req.params.id)];
             case 1:
                 users = _a.sent();
-                /*         const todos = await getRepository(Todos).findOne(req.body.id);
-                 */
                 return [2 /*return*/, res.json(users)];
         }
     });
@@ -123,11 +125,13 @@ var getUsersOne = function (req, res) { return __awaiter(void 0, void 0, void 0,
 exports.getUsersOne = getUsersOne;
 /* ************************************************************************************** */
 /* POST TODOS */
+/* Le tengo que asignar una tarea para que le aparezca la lista de tareas */
 var createUserTodos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userTodos, userTodo, todos, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                /* Si la descripcion esta vacia */
                 if (!req.body.descripcion)
                     throw new utils_1.Exception("descripcion - Escriba una descripcion porfavor");
                 userTodos = typeorm_1.getRepository(Users_1.Users);
@@ -136,8 +140,10 @@ var createUserTodos = function (req, res) { return __awaiter(void 0, void 0, voi
                 userTodo = _a.sent();
                 if (!userTodo) return [3 /*break*/, 3];
                 todos = new Todos_1.Todos();
+                /* le asignamos la descripcion a todos.descripcion */
                 todos.descripcion = req.body.descripcion;
                 todos.done = false;
+                /* le asignamos el usuario que le pertenece */
                 todos.users = userTodo;
                 return [4 /*yield*/, typeorm_1.getRepository(Todos_1.Todos).save(todos)];
             case 2:
@@ -149,7 +155,7 @@ var createUserTodos = function (req, res) { return __awaiter(void 0, void 0, voi
 }); };
 exports.createUserTodos = createUserTodos;
 /* ************************************************************************************** */
-/* Lemos la lista de 1 usuario */
+/* Leemos TODA la LISTA de 1 usuario */
 var getUsersTodos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var users, result;
     return __generator(this, function (_a) {
@@ -159,7 +165,7 @@ var getUsersTodos = function (req, res) { return __awaiter(void 0, void 0, void 
                 users = _a.sent();
                 if (!!users) return [3 /*break*/, 2];
                 return [2 /*return*/, res.json({ "messager": "El usuario no existe" })];
-            case 2: return [4 /*yield*/, typeorm_1.getRepository(Todos_1.Todos).find(req.body.id)];
+            case 2: return [4 /*yield*/, typeorm_1.getRepository(Todos_1.Todos).find({ where: { users: users } })];
             case 3:
                 result = _a.sent();
                 return [2 /*return*/, res.json(result)];

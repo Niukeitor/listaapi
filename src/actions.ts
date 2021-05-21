@@ -35,7 +35,7 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
         /* Damos una Respuesta */
 		return res.json(users);
 }
-/* Eliminamos 1 usuario DELETE */
+/* Eliminamos 1 usuario DELETE ((tambien tenemos que eliminar las tareas */
 export const deleteUser = async (req: Request, res: Response): Promise<Response> =>{
         /* guardamos en users | buscamos en la BD en la tabla Users un solo valor con el id req.params.id */
          const users = await getRepository(Users).findOne(req.params.id);
@@ -46,6 +46,13 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
         }else{
             /* Caso contrario, el usuario SI existe, entonces le pasamos el id de quien queremos borrar */
             const result = await getRepository(Users).delete(req.params.id);
+
+
+            /* *************************************************************** */
+            /* eliminamos la lista */
+            /* await getRepository(Todos).delete(req.params.id); */
+            /* *************************************************************** */
+
             return res.json(result);
         }
 }
@@ -54,33 +61,32 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 /* LEEMOS 1 SOLO GET segun el parametro*/
 export const getUsersOne = async (req: Request, res: Response): Promise<Response> =>{
         const users = await getRepository(Users).findOne(req.params.id);
-/*         const todos = await getRepository(Todos).findOne(req.body.id);
- */
         return res.json(users);
-        /* No vemos nada porque no tienen tareas */
-		/* return res.json(todos); */
 }
 
 /* ************************************************************************************** */
 /* POST TODOS */
+/* Le tengo que asignar una tarea para que le aparezca la lista de tareas */
 export const createUserTodos = async (req: Request, res:Response): Promise<Response> =>{
-	
-	if(!req.body.descripcion) throw new Exception("descripcion - Escriba una descripcion porfavor")
-    /* Nos guadamos a todas las listas los usuarios en "userTodos" */
+    
+    /* Si la descripcion esta vacia */
+    if(!req.body.descripcion) throw new Exception("descripcion - Escriba una descripcion porfavor")
+    
+    /* Nos guadamos todos los usuarios en "userTodos" */
     const userTodos = getRepository(Users)
     
-    /* VALIDAMOS QUE haya alguien con ese mismo id */
-	const userTodo = await userTodos.findOne(req.params.id )
+    /* buscamos a 1 usuario con el id  */
+	const userTodo = await userTodos.findOne(req.params.id)
 	if(userTodo) {
-        /* Si cumple con todo correctamente, CREAMOS la lista */
-/*        const newUserTodos = getRepository(Todos).create(req.body.descripcion);  //Creo una
-        const results = await getRepository(Users).save(newUserTodos); //Grabo el nuevo usuario 
-        return res.json(results); */
+        /* guardamos la tabla en todos */
         let todos = new Todos();
+        /* le asignamos la descripcion a todos.descripcion */
         todos.descripcion = req.body.descripcion;
         todos.done = false;
+        /* le asignamos el usuario que le pertenece */
         todos.users = userTodo;
-        const results = await getRepository(Todos).save(todos); //
+        /* vamos a la bd y grabamos todos los datos nuevos */
+        const results = await getRepository(Todos).save(todos);
         return res.json(results);
     }else{
         return res.json("mesagger srgio un error");
@@ -88,16 +94,15 @@ export const createUserTodos = async (req: Request, res:Response): Promise<Respo
 }
 
 /* ************************************************************************************** */
-/* Lemos la lista de 1 usuario */
+/* Leemos TODA la LISTA de 1 usuario */
 export const getUsersTodos = async (req: Request, res: Response): Promise<Response> =>{
-        //Primero validamos si existe el usuario para ver la lista
-         const users = await getRepository(Users).findOne(req.params.id);
  
+         const users = await getRepository(Users).findOne(req.params.id);
         if(!users){
             return res.json({"messager":"El usuario no existe"})
         }else{
-            /* const result = await getRepository(Users).findOne(req.params.id); */
-            const result = await getRepository(Todos).find(req.body.id);
+            /*                como identificar al usuario - where {users: users} */
+            const result = await getRepository(Todos).find({where: {users: users}});
             return res.json(result);
         }
 }
