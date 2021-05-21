@@ -40,19 +40,12 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
         /* guardamos en users | buscamos en la BD en la tabla Users un solo valor con el id req.params.id */
          const users = await getRepository(Users).findOne(req.params.id);
         /*(validamos si el usuario existe) */
-        /*Si usuario es falso es que no existe */
         if(!users){
             return res.json({"messager":"El usuario no existe"})
         }else{
-            /* Caso contrario, el usuario SI existe, entonces le pasamos el id de quien queremos borrar */
-            const result = await getRepository(Users).delete(req.params.id);
-
-
-            /* *************************************************************** */
-            /* eliminamos la lista */
-            /* await getRepository(Todos).delete(req.params.id); */
-            /* *************************************************************** */
-
+            /* Caso contrario, el usuario SI existe, entonces le pasamos el usuarios que queremos borrar */
+            const result = await getRepository(Todos).delete({users: users});
+            await getRepository(Users).delete(users);
             return res.json(result);
         }
 }
