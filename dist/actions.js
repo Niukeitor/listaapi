@@ -36,30 +36,32 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getUsers = exports.createUser = void 0;
+exports.deleteUser = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Users_1 = require("./entities/Users");
 var utils_1 = require("./utils");
+/* FUNCION PARA CREAR UN USUARIO */
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                // important validations to avoid ambiguos errors, the client needs to understand what went wrong
+                /* ANTES DE CREAR UN USUARIO */
+                // validaciones importantes para evitar errores ambiguos, el cliente debe comprender qué salió mal
                 if (!req.body.first_name)
-                    throw new utils_1.Exception("Please provide a first_name");
+                    throw new utils_1.Exception("Please provide a first_name - Escriba un nombre porfavor");
                 if (!req.body.last_name)
-                    throw new utils_1.Exception("Please provide a last_name");
+                    throw new utils_1.Exception("Please provide a last_name - Escriba un apellido porfavor");
                 if (!req.body.email)
-                    throw new utils_1.Exception("Please provide an email");
+                    throw new utils_1.Exception("Please provide an email - Escriba un email porfavor");
                 if (!req.body.password)
-                    throw new utils_1.Exception("Please provide a password");
+                    throw new utils_1.Exception("Please provide a password - Escriba una contraseña porfavor");
                 userRepo = typeorm_1.getRepository(Users_1.Users);
                 return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email } })];
             case 1:
                 user = _a.sent();
                 if (user)
-                    throw new utils_1.Exception("Users already exists with this email");
+                    throw new utils_1.Exception("Ya existe un usuario con este correo: " + user.email);
                 newUser = typeorm_1.getRepository(Users_1.Users).create(req.body);
                 return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).save(newUser)];
             case 2:
@@ -69,6 +71,7 @@ var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 exports.createUser = createUser;
+/* Leemos usuarios */
 var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var users;
     return __generator(this, function (_a) {
@@ -81,3 +84,17 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getUsers = getUsers;
+/* Eliminamos un usuario */
+var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var users;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).find()];
+            case 1:
+                users = _a.sent();
+                return [2 /*return*/, res.json(users)];
+        }
+    });
+}); };
+exports.deleteUser = deleteUser;
+/* Primeros practiquemos lo que hizo pablo y luego el todolist :D vos podes! */ 

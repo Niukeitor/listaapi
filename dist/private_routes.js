@@ -34,7 +34,15 @@ exports.__esModule = true;
 var express_1 = require("express");
 var utils_1 = require("./utils");
 var actions = __importStar(require("./actions"));
-// declare a new router to include all the endpoints
+// declarar un nuevo enrutador para incluir todos los puntos finales
 var router = express_1.Router();
+/* Aqui van las rutas privadas */
+/* Leemos los usuarios */
+/* Aqui van las rutas publicas */
+// METODO GET
+// Ruta de usuarios,| (safe -->) invocamos a "actions.getUsers" que viene de "./actions"
 router.get('/user', utils_1.safe(actions.getUsers));
+/* METODO DELETE */
+/* Borramos los usuarios */
+router["delete"]('/user', utils_1.safe(actions.deleteUser));
 exports["default"] = router;
