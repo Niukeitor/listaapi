@@ -1,21 +1,27 @@
-
-/**
- * Las rutas públicas son las URL de la API que cualquiera puede solicitar.
- * sin tener que iniciar sesión, por ejemplo:
- * 
- * POST /user es el punto final para crear un nuevo usuario o "registrarse".
- * POST /el token puede ser el punto final para "iniciar sesión" (generar un token)
- */
+ 
 import { Router } from 'express';
 import { safe } from './utils';
 import { createUser } from './actions';
+import * as actions from './actions';
 
 const router = Router();
-/* Aqui van las rutas publicas */
-// METODO POST
-// Ruta de registro,| (safe -->) crea un nuevo usuario en la base de datos 
-// ('/user',        |            con "createUser" que viene de "./actions"
-//                  |            (Es la funcion grande jeje la primera de actions)
+ /* POST 1 user */
 router.post('/user', safe(createUser));
+
+// METODO GET TODOS LOS USUARIOS
+router.get('/todos', safe(actions.getUsers));
+
+/* METODO GET 1 lista de usuario */
+router.get('/todos/:id', safe(actions.getUsersTodos));
+
+/* METODO DELETE 1 USUARIO*/
+ router.delete('/user/:id', safe(actions.deleteUser)); 
+
+ /* ****************************************************************************************** */
+/* Leemos 1 solo usuario */
+router.get('/user/:id', safe(actions.getUsersOne));
+ /* ****************************************************************************************** */
+/* creamos 1 sola lista segun el id */
+router.post('/todos/:id', safe(actions.createUserTodos));
 
 export default router;

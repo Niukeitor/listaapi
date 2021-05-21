@@ -21,12 +21,5 @@ const router = Router();
 /* Leemos los usuarios */
 /* Aqui van las rutas publicas */
 
-// METODO GET
-// Ruta de usuarios,| (safe -->) invocamos a "actions.getUsers" que viene de "./actions"
-router.get('/user', safe(actions.getUsers));
-
-/* METODO DELETE */
-/* Borramos los usuarios, especificando id */
-router.delete('/user/:id', safe(actions.deleteUser));
-
+ 
 export default router;

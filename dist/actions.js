@@ -36,27 +36,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.deleteUser = exports.getUsers = exports.createUser = void 0;
+exports.getUsersTodos = exports.createUserTodos = exports.getUsersOne = exports.deleteUser = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Users_1 = require("./entities/Users");
+var Todos_1 = require("./entities/Todos");
 var utils_1 = require("./utils");
 /* NOTA IMPORTANTE: "Users" es una tabla de ".entities/Users" */
-/* FUNCION PARA CREAR UN USUARIO */
+/* POST Creamos 1 usuario*/
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                /* ANTES DE CREAR UN USUARIO */
+                /* ANTES DE CREAR UN USUARIOoo */
                 // validaciones importantes para evitar errores ambiguos, el cliente debe comprender qué salió mal
                 if (!req.body.first_name)
-                    throw new utils_1.Exception("Please provide a first_name - Escriba un nombre porfavor");
+                    throw new utils_1.Exception("first_name - Escriba un nombre porfavor");
                 if (!req.body.last_name)
-                    throw new utils_1.Exception("Please provide a last_name - Escriba un apellido porfavor");
+                    throw new utils_1.Exception(" last_name - Escriba un apellido porfavor");
                 if (!req.body.email)
-                    throw new utils_1.Exception("Please provide an email - Escriba un email porfavor");
+                    throw new utils_1.Exception("email - Escriba un email porfavor");
                 if (!req.body.password)
-                    throw new utils_1.Exception("Please provide a password - Escriba una contraseña porfavor");
+                    throw new utils_1.Exception("password - Escriba una contraseña porfavor");
                 userRepo = typeorm_1.getRepository(Users_1.Users);
                 return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email } })];
             case 1:
@@ -72,7 +73,7 @@ var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 exports.createUser = createUser;
-/* Leemos usuarios */
+/* Leemos TODOS los usuarios GET */
 var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var users;
     return __generator(this, function (_a) {
@@ -86,7 +87,7 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getUsers = getUsers;
-/* Eliminamos un usuario */
+/* Eliminamos 1 usuario DELETE */
 var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var users, result;
     return __generator(this, function (_a) {
@@ -104,3 +105,65 @@ var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 exports.deleteUser = deleteUser;
+/* ************************************************************************************** */
+/* LEEMOS 1 SOLO GET segun el parametro*/
+var getUsersOne = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var users;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).findOne(req.params.id)];
+            case 1:
+                users = _a.sent();
+                /*         const todos = await getRepository(Todos).findOne(req.body.id);
+                 */
+                return [2 /*return*/, res.json(users)];
+        }
+    });
+}); };
+exports.getUsersOne = getUsersOne;
+/* ************************************************************************************** */
+/* POST TODOS */
+var createUserTodos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var userTodos, userTodo, todos, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.body.descripcion)
+                    throw new utils_1.Exception("descripcion - Escriba una descripcion porfavor");
+                userTodos = typeorm_1.getRepository(Users_1.Users);
+                return [4 /*yield*/, userTodos.findOne(req.params.id)];
+            case 1:
+                userTodo = _a.sent();
+                if (!userTodo) return [3 /*break*/, 3];
+                todos = new Todos_1.Todos();
+                todos.descripcion = req.body.descripcion;
+                todos.done = false;
+                todos.users = userTodo;
+                return [4 /*yield*/, typeorm_1.getRepository(Todos_1.Todos).save(todos)];
+            case 2:
+                results = _a.sent();
+                return [2 /*return*/, res.json(results)];
+            case 3: return [2 /*return*/, res.json("mesagger srgio un error")];
+        }
+    });
+}); };
+exports.createUserTodos = createUserTodos;
+/* ************************************************************************************** */
+/* Lemos la lista de 1 usuario */
+var getUsersTodos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var users, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).findOne(req.params.id)];
+            case 1:
+                users = _a.sent();
+                if (!!users) return [3 /*break*/, 2];
+                return [2 /*return*/, res.json({ "messager": "El usuario no existe" })];
+            case 2: return [4 /*yield*/, typeorm_1.getRepository(Todos_1.Todos).find(req.body.id)];
+            case 3:
+                result = _a.sent();
+                return [2 /*return*/, res.json(result)];
+        }
+    });
+}); };
+exports.getUsersTodos = getUsersTodos;

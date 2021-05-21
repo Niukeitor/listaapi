@@ -1,20 +1,41 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 exports.__esModule = true;
-/**
- * Las rutas públicas son las URL de la API que cualquiera puede solicitar.
- * sin tener que iniciar sesión, por ejemplo:
- *
- * POST /user es el punto final para crear un nuevo usuario o "registrarse".
- * POST /el token puede ser el punto final para "iniciar sesión" (generar un token)
- */
 var express_1 = require("express");
 var utils_1 = require("./utils");
 var actions_1 = require("./actions");
+var actions = __importStar(require("./actions"));
 var router = express_1.Router();
-/* Aqui van las rutas publicas */
-// METODO POST
-// Ruta de registro,| (safe -->) crea un nuevo usuario en la base de datos 
-// ('/user',        |            con "createUser" que viene de "./actions"
-//                  |            (Es la funcion grande jeje la primera de actions)
+/* POST 1 user */
 router.post('/user', utils_1.safe(actions_1.createUser));
+// METODO GET TODOS LOS USUARIOS
+router.get('/todos', utils_1.safe(actions.getUsers));
+/* METODO GET 1 lista de usuario */
+router.get('/todos/:id', utils_1.safe(actions.getUsersTodos));
+/* METODO DELETE 1 USUARIO*/
+router["delete"]('/user/:id', utils_1.safe(actions.deleteUser));
+/* ****************************************************************************************** */
+/* Leemos 1 solo usuario */
+router.get('/user/:id', utils_1.safe(actions.getUsersOne));
+/* ****************************************************************************************** */
+/* creamos 1 sola lista segun el id */
+router.post('/todos/:id', utils_1.safe(actions.createUserTodos));
 exports["default"] = router;
