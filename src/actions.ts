@@ -8,8 +8,6 @@ import { Exception } from './utils'
 
 /* POST Creamos 1 usuario*/
 export const createUser = async (req: Request, res:Response): Promise<Response> =>{
-    /* ANTES DE CREAR UN USUARIOoo */
-	// validaciones importantes para evitar errores ambiguos, el cliente debe comprender qué salió mal
 	if(!req.body.first_name) throw new Exception("first_name - Escriba un nombre porfavor")
 	if(!req.body.last_name) throw new Exception(" last_name - Escriba un apellido porfavor")
 	if(!req.body.email) throw new Exception("email - Escriba un email porfavor")
@@ -19,10 +17,8 @@ export const createUser = async (req: Request, res:Response): Promise<Response> 
     const userRepo = getRepository(Users)
     
     /* VALIDAMOS QUE NADIE +MAS+ tenga ese mismo correo, tiene que ser Unico(unique) */
-    // fetch for any user with this email - para cualquier usuario con este correo electrónico
 	const user = await userRepo.findOne({ where: {email: req.body.email }})
 	if(user) throw new Exception(`Ya existe un usuario con este correo: ${user.email}`)
-    
     /* Si cumple con todo correctamente, CREAMOS EL USUARIO */
 	const newUser = getRepository(Users).create(req.body);  //Creo un usuario
 	const results = await getRepository(Users).save(newUser); //Grabo el nuevo usuario 
@@ -30,10 +26,10 @@ export const createUser = async (req: Request, res:Response): Promise<Response> 
 }
 /* Leemos TODOS los usuarios GET */
 export const getUsers = async (req: Request, res: Response): Promise<Response> =>{
-        /* Leemos TODOS (find) los usuarios de la BD (getRespository(tablaUsers)) */
-        const users = await getRepository(Users).find();
-        /* Damos una Respuesta */
-		return res.json(users);
+    /* Leemos TODOS (find) los usuarios de la BD (getRespository(tablaUsers)) */
+    const users = await getRepository(Users).find();
+    /* Damos una Respuesta */
+    return res.json(users);
 }
 /* Eliminamos 1 usuario DELETE ((tambien tenemos que eliminar las tareas */
 export const deleteUser = async (req: Request, res: Response): Promise<Response> =>{
@@ -59,7 +55,6 @@ export const getUsersOne = async (req: Request, res: Response): Promise<Response
 
 /* ************************************************************************************** */
 /* POST TODOS */
-/* Le tengo que asignar una tarea para que le aparezca la lista de tareas */
 export const createUserTodos = async (req: Request, res:Response): Promise<Response> =>{
     
     /* Si la descripcion esta vacia */
@@ -98,4 +93,17 @@ export const getUsersTodos = async (req: Request, res: Response): Promise<Respon
             const result = await getRepository(Todos).find({where: {users: users}});
             return res.json(result);
         }
+}
+
+/* ************************************************************************************** */
+/* Metodo PUT tenes que poner el id de quien queres ediar */
+export const updateTodos = async (req: Request, res: Response): Promise<Response> =>{
+        const todos = await getRepository(Todos).findOne(req.params.id);
+        if(todos){
+            /* aplicamos */
+            getRepository(Todos).merge(todos, req.body); 
+            const results = await getRepository(Todos).save(todos)
+            return res.json(results);
+        }
+        return res.json({msg: "Usuario no encontrado"})
 }

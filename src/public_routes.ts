@@ -27,4 +27,7 @@ router.get('/todos/:id', safe(actions.getUsersTodos));
 /* POST 1 lista segun el id del usuario*/
 router.post('/todos/:id', safe(actions.createUserTodos));
 
+/* PUT 1 tarea*/
+router.put('/todos/:id', safe(actions.updateTodos));
+
 export default router;

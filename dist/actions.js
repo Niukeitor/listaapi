@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getUsersTodos = exports.createUserTodos = exports.getUsersOne = exports.deleteUser = exports.getUsers = exports.createUser = void 0;
+exports.updateTodos = exports.getUsersTodos = exports.createUserTodos = exports.getUsersOne = exports.deleteUser = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Users_1 = require("./entities/Users");
 var Todos_1 = require("./entities/Todos");
@@ -48,8 +48,6 @@ var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                /* ANTES DE CREAR UN USUARIOoo */
-                // validaciones importantes para evitar errores ambiguos, el cliente debe comprender qué salió mal
                 if (!req.body.first_name)
                     throw new utils_1.Exception("first_name - Escriba un nombre porfavor");
                 if (!req.body.last_name)
@@ -124,7 +122,6 @@ var getUsersOne = function (req, res) { return __awaiter(void 0, void 0, void 0,
 exports.getUsersOne = getUsersOne;
 /* ************************************************************************************** */
 /* POST TODOS */
-/* Le tengo que asignar una tarea para que le aparezca la lista de tareas */
 var createUserTodos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userTodos, userTodo, todos, results;
     return __generator(this, function (_a) {
@@ -172,3 +169,24 @@ var getUsersTodos = function (req, res) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.getUsersTodos = getUsersTodos;
+/* ************************************************************************************** */
+/* Metodo PUT tenes que poner el id de quien queres ediar */
+var updateTodos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var todos, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Todos_1.Todos).findOne(req.params.id)];
+            case 1:
+                todos = _a.sent();
+                if (!todos) return [3 /*break*/, 3];
+                /* aplicamos */
+                typeorm_1.getRepository(Todos_1.Todos).merge(todos, req.body);
+                return [4 /*yield*/, typeorm_1.getRepository(Todos_1.Todos).save(todos)];
+            case 2:
+                results = _a.sent();
+                return [2 /*return*/, res.json(results)];
+            case 3: return [2 /*return*/, res.json({ msg: "Usuario no encontrado" })];
+        }
+    });
+}); };
+exports.updateTodos = updateTodos;

@@ -39,4 +39,6 @@ router.get('/todos/:id', utils_1.safe(actions.getUsersTodos));
 router["delete"]('/user/:id', utils_1.safe(actions.deleteUser));
 /* POST 1 lista segun el id del usuario*/
 router.post('/todos/:id', utils_1.safe(actions.createUserTodos));
+/* PUT 1 tarea*/
+router.put('/todos/:id', utils_1.safe(actions.updateTodos));
 exports["default"] = router;
