@@ -3,6 +3,8 @@ import { getRepository } from 'typeorm'  // getRepository"  traer una tabla de l
 import { Users } from './entities/Users'
 import { Exception } from './utils'
 
+/* NOTA IMPORTANTE: "Users" es una tabla de ".entities/Users" */
+
 /* FUNCION PARA CREAR UN USUARIO */
 export const createUser = async (req: Request, res:Response): Promise<Response> =>{
     /* ANTES DE CREAR UN USUARIO */
@@ -28,12 +30,23 @@ export const createUser = async (req: Request, res:Response): Promise<Response> 
 
 /* Leemos usuarios */
 export const getUsers = async (req: Request, res: Response): Promise<Response> =>{
-		const users = await getRepository(Users).find();
+        /* Leemos TODOS (find) los usuarios de la BD (getRespository(tablaUsers)) */
+        const users = await getRepository(Users).find();
+        /* Damos una Respuesta */
 		return res.json(users);
 }
 /* Eliminamos un usuario */
 export const deleteUser = async (req: Request, res: Response): Promise<Response> =>{
-		const users = await getRepository(Users).find();
-		return res.json(users);
+        /* guardamos en users | buscamos en la BD en la tabla Users un solo valor con el id req.params.id */
+         const users = await getRepository(Users).findOne(req.params.id);
+        /*(validamos si el usuario existe) */
+        /*Si usuario es falso es que no existe */
+        if(!users){
+            return res.json({"messager":"El usuario no existe"})
+        }else{
+            /* user=result */
+            /* Caso contrario, el usuario SI existe, entonces le pasamos el id de quien queremos borrar */
+            const result = await getRepository(Users).delete(req.params.id);
+            return res.json(result);
+        }
 }
-/* Primeros practiquemos lo que hizo pablo y luego el todolist :D vos podes! */

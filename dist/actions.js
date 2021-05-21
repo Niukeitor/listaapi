@@ -40,6 +40,7 @@ exports.deleteUser = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Users_1 = require("./entities/Users");
 var utils_1 = require("./utils");
+/* NOTA IMPORTANTE: "Users" es una tabla de ".entities/Users" */
 /* FUNCION PARA CREAR UN USUARIO */
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
@@ -79,6 +80,7 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
             case 0: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).find()];
             case 1:
                 users = _a.sent();
+                /* Damos una Respuesta */
                 return [2 /*return*/, res.json(users)];
         }
     });
@@ -86,15 +88,19 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
 exports.getUsers = getUsers;
 /* Eliminamos un usuario */
 var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var users;
+    var users, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).find()];
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).findOne(req.params.id)];
             case 1:
                 users = _a.sent();
-                return [2 /*return*/, res.json(users)];
+                if (!!users) return [3 /*break*/, 2];
+                return [2 /*return*/, res.json({ "messager": "El usuario no existe" })];
+            case 2: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users)["delete"](req.params.id)];
+            case 3:
+                result = _a.sent();
+                return [2 /*return*/, res.json(result)];
         }
     });
 }); };
 exports.deleteUser = deleteUser;
-/* Primeros practiquemos lo que hizo pablo y luego el todolist :D vos podes! */ 

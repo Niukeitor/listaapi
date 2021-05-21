@@ -43,6 +43,6 @@ var router = express_1.Router();
 // Ruta de usuarios,| (safe -->) invocamos a "actions.getUsers" que viene de "./actions"
 router.get('/user', utils_1.safe(actions.getUsers));
 /* METODO DELETE */
-/* Borramos los usuarios */
-router["delete"]('/user', utils_1.safe(actions.deleteUser));
+/* Borramos los usuarios, especificando id */
+router["delete"]('/user/:id', utils_1.safe(actions.deleteUser));
 exports["default"] = router;

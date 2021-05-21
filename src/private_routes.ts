@@ -26,7 +26,7 @@ const router = Router();
 router.get('/user', safe(actions.getUsers));
 
 /* METODO DELETE */
-/* Borramos los usuarios */
-router.delete('/user', safe(actions.deleteUser));
+/* Borramos los usuarios, especificando id */
+router.delete('/user/:id', safe(actions.deleteUser));
 
 export default router;
