@@ -98,10 +98,13 @@ export const getUsersTodos = async (req: Request, res: Response): Promise<Respon
 /* ************************************************************************************** */
 /* Metodo PUT tenes que poner el id de quien queres ediar */
 export const updateTodos = async (req: Request, res: Response): Promise<Response> =>{
+	/* Si encontramos 1 lista con el id que le pasamos */
         const todos = await getRepository(Todos).findOne(req.params.id);
         if(todos){
-            /* aplicamos */
+            /* entonces, remplazamos la lista esa que guardamos en la variable "todos" y la remplazamos (merge) 
+	    por los datos que le pasamos (req.body)*/
             getRepository(Todos).merge(todos, req.body); 
+	    /* Guardamos los datos que le aplicamos a la variable "todos" */
             const results = await getRepository(Todos).save(todos)
             return res.json(results);
         }
