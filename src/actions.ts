@@ -39,7 +39,9 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
         if(!users){
             return res.json({"messager":"El usuario no existe"})
         }else{
-            /* Caso contrario, el usuario SI existe, entonces le pasamos el usuarios que queremos borrar */
+            /* Caso contrario, el usuario SI existe, entonces le pasamos el usuarios que queremos borrar  en el todo list (recuerda que esta como FK)
+	    	Nota: creo que no estamos borrando la lista(Verificar)
+	    */
             const result = await getRepository(Todos).delete({users: users});
             await getRepository(Users).delete(users);
             return res.json(result);
