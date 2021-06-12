@@ -74,16 +74,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 exports.Exception = exports.safe = exports.renderIndex = exports.url = void 0;
-var path = __importStar(require("path")); // node.js internal module usefull to get file paths
-var express_list_endpoints_1 = __importDefault(require("express-list-endpoints")); //just a function that retrieves all the API routes
-var ejs_1 = __importDefault(require("ejs")); //template engine
-// We need to know what will be the API host
-// in a local computer is always "localhost" 
-// but in gitpod if varies depending on the workspace URL
+var path = __importStar(require("path"));
+var express_list_endpoints_1 = __importDefault(require("express-list-endpoints"));
+var ejs_1 = __importDefault(require("ejs"));
 var url = function (port) {
     var publicUrl = "http://localhost:" + port;
-    // Gitpod has internal environment variables https://www.gitpod.io/docs/environment-variables/
-    // the Workspace URL is one of them (thank God)
     if (process.env.GITPOD_WORKSPACE_URL) {
         var _a = process.env.GITPOD_WORKSPACE_URL.split('://'), schema = _a[0], host = _a[1];
         publicUrl = "https://" + port + "-" + host;
@@ -91,7 +86,6 @@ var url = function (port) {
     return publicUrl;
 };
 exports.url = url;
-// this function creates the HTML/CSS for the API Index home page
 var renderIndex = function (_app, url) { return __awaiter(void 0, void 0, void 0, function () {
     var routes, data;
     return __generator(this, function (_a) {
@@ -102,7 +96,6 @@ var renderIndex = function (_app, url) { return __awaiter(void 0, void 0, void 0
             });
             return endpoints;
         }).flat()
-            //remove the home page rout because its obvious
             .filter(function (r) { return r.path != "/"; });
         data = {
             host: url,
@@ -111,7 +104,6 @@ var renderIndex = function (_app, url) { return __awaiter(void 0, void 0, void 0
             starter: "https://start.4geeksacademy.com/starters/express"
         };
         return [2 /*return*/, new Promise(function (resolve, reject) {
-                // use the EJS template engine to generate the HTML/CSS
                 ejs_1["default"].renderFile(path.join(__dirname, "../docs/assets/template.ejs"), data, function (err, result) {
                     if (err) {
                         reject(err);
@@ -122,7 +114,6 @@ var renderIndex = function (_app, url) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.renderIndex = renderIndex;
-//.sort((a,b) => a.method > b.method)
 var safe = function (fn) { return function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var fnReturn, err_1;
     return __generator(this, function (_a) {
